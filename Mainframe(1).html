@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ferme Laitière Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #2E7D32;
+            --secondary-color: #795548;
+            --accent-color: #87CEEB;
+            --light-bg: #E8F5E9;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #FFFFFF;
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header i {
+            font-size: 28px;
+            margin-right: 15px;
+            color: white;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .menu-category {
+            margin-bottom: 25px;
+        }
+        
+        .category-title {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .category-title:hover {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+        
+        .category-title i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .menu-items {
+            list-style: none;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .menu-items.collapsed {
+            max-height: 0;
+        }
+        
+        .menu-items li {
+            padding: 12px 20px 12px 50px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+        
+        .menu-items li:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .menu-items li.active {
+            background-color: var(--primary-dark);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .menu-items i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: var(--sidebar-width);
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .dashboard-title {
+            color: var(--primary-dark);
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-welcome {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .user-role {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Stats Cards */
+        .stats-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-bg);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+        
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 28px;
+        }
+        
+        .cows-icon { background-color: #E8F5E9; color: var(--primary-color); }
+        .milk-icon { background-color: #E3F2FD; color: #2196F3; }
+        .health-icon { background-color: #FFEBEE; color: #F44336; }
+        .food-icon { background-color: #FFF8E1; color: #FFC107; }
+        .workers-icon { background-color: #E8EAF6; color: #3F51B5; }
+        .equipment-icon { background-color: #F3E5F5; color: #9C27B0; }
+        
+        .stat-info h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+        
+        .stat-info p {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .action-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 140px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .action-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* Recent Activities */
+        .recent-activities {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+        }
+        
+        .activities-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .activities-title {
+            font-size: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .activities-title i {
+            margin-right: 10px;
+        }
+        
+        .view-all {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .activity-list {
+            list-style: none;
+        }
+        
+        .activity-item {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+        
+        .activity-time {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        /* Module Content */
+        .module-content {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .module-title {
+            font-size: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .module-title i {
+            margin-right: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 250px;
+            }
+            
+            .main-content {
+                margin-left: 250px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                overflow: visible;
+            }
+            
+            .sidebar-header h1, .category-title span, .menu-items span {
+                display: none;
+            }
+            
+            .sidebar-header {
+                justify-content: center;
+                padding: 0 0 20px 0;
+            }
+            
+            .sidebar-header i {
+                margin-right: 0;
+                font-size: 32px;
+            }
+            
+            .category-title {
+                justify-content: center;
+                padding: 10px 0;
+            }
+            
+            .category-title i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .menu-items li {
+                justify-content: center;
+                padding: 12px 0;
+            }
+            
+            .menu-items i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px 15px;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-cow"></i>
+            <h1>Ferme Manager</h1>
+        </div>
+        
+        <!-- Tableau de bord -->
+        <div class="menu-category">
+            <div class="category-title" data-category="dashboard">
+                <i class="fas fa-chart-pie"></i>
+                <span>Tableau de bord</span>
+            </div>
+            <ul class="menu-items">
+                <li class="active" data-section="overview"><i class="fas fa-home"></i> <span>Vue d'ensemble</span></li>
+                <li data-section="statistics"><i class="fas fa-chart-line"></i> <span>Statistiques</span></li>
+                <li data-section="notifications"><i class="fas fa-bell"></i> <span>Notifications</span></li>
+            </ul>
+        </div>
+        
+        <!-- Gestion des ressources -->
+        <div class="menu-category">
+            <div class="category-title" data-category="resources">
+                <i class="fas fa-boxes"></i>
+                <span>Gestion des ressources</span>
+            </div>
+            <ul class="menu-items">
+                <li data-section="personnel"><i class="fas fa-users"></i> <span>Personnel</span></li>
+                <li data-section="external"><i class="fas fa-user-md"></i> <span>Intervenants externes</span></li>
+                <li data-section="machines"><i class="fas fa-tractor"></i> <span>Machines</span></li>
+                <li data-section="tools"><i class="fas fa-tools"></i> <span>Outillage</span></li>
+                <li data-section="spareparts"><i class="fas fa-cog"></i> <span>Pièces de rechange</span></li>
+                <li data-section="fuels"><i class="fas fa-gas-pump"></i> <span>Carburants</span></li>
+            </ul>
+        </div>
+        
+        <!-- Alimentation des vaches -->
+        <div class="menu-category">
+            <div class="category-title" data-category="feeding">
+                <i class="fas fa-utensils"></i>
+                <span>Alimentation des vaches</span>
+            </div>
+            <ul class="menu-items">
+                <li data-section="diet-plan"><i class="fas fa-list-alt"></i> <span>Plan alimentaire</span></li>
+                <li data-section="rations"><i class="fas fa-weight"></i> <span>Rations</span></li>
+                <li data-section="scheduling"><i class="fas fa-clock"></i> <span>Programmation</span></li>
+                <li data-section="consumption"><i class="fas fa-chart-bar"></i> <span>Suivi consommation</span></li>
+            </ul>
+        </div>
+        
+        <!-- Gestion du troupeau -->
+        <div class="menu-category">
+            <div class="category-title" data-category="herd">
+                <i class="fas fa-cow"></i>
+                <span>Gestion du troupeau</span>
+            </div>
+            <ul class="menu-items">
+                <li data-section="identification"><i class="fas fa-id-card"></i> <span>Identification</span></li>
+                <li data-section="lifecycle"><i class="fas fa-history"></i> <span>Cycle de vie</span></li>
+                <li data-section="health"><i class="fas fa-heartbeat"></i> <span>Santé</span></li>
+                <li data-section="vaccinations"><i class="fas fa-syringe"></i> <span>Vaccinations</span></li>
+            </ul>
+        </div>
+        
+        <!-- Gestion de production -->
+        <div class="menu-category">
+            <div class="category-title" data-category="production">
+                <i class="fas fa-tint"></i>
+                <span>Gestion de production</span>
+            </div>
+            <ul class="menu-items">
+                <li data-section="quantification"><i class="fas fa-weight"></i> <span>Quantification</span></li>
+                <li data-section="quality"><i class="fas fa-flask"></i> <span>Qualité du lait</span></li>
+                <li data-section="milking"><i class="fas fa-calendar"></i> <span>Planning de traite</span></li>
+                <li data-section="storage"><i class="fas fa-temperature-low"></i> <span>Stockage</span></li>
+                <li data-section="deliveries"><i class="fas fa-truck"></i> <span>Livraisons</span></li>
+            </ul>
+        </div>
+        
+        <!-- État et analyse -->
+        <div class="menu-category">
+            <div class="category-title" data-category="analysis">
+                <i class="fas fa-chart-line"></i>
+                <span>État et analyse</span>
+            </div>
+            <ul class="menu-items">
+                <li data-section="reports"><i class="fas fa-file-alt"></i> <span>Rapports</span></li>
+                <li data-section="stats"><i class="fas fa-chart-pie"></i> <span>Statistiques</span></li>
+                <li data-section="balance"><i class="fas fa-balance-scale"></i> <span>Bilan</span></li>
+                <li data-section="costs"><i class="fas fa-search-dollar"></i> <span>Analyse coûts</span></li>
+                <li data-section="forecasts"><i class="fas fa-project-diagram"></i> <span>Prévisions</span></li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Tableau de Bord</h1>
+            <div class="user-info">
+                <div class="user-welcome">
+                    <div class="user-name">Mohamed HMIDEN</div>
+                    <div class="user-role">Administrateur</div>
+                </div>
+                <div class="user-avatar">MH</div>
+            </div>
+        </div>
+        
+        <!-- Vue d'ensemble (Section active par défaut) -->
+        <div id="overview" class="content-section active">
+            <!-- Stats Overview -->
+            <div class="stats-section">
+                <h2 class="section-title"><i class="fas fa-chart-line"></i> Aperçu des indicateurs</h2>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon cows-icon">
+                            <i class="fas fa-cow"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>142</h3>
+                            <p>Vaches enregistrées</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon milk-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>1,245 L</h3>
+                            <p>Production aujourd'hui</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon health-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>3</h3>
+                            <p>Alertes santé</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon food-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>82%</h3>
+                            <p>Niveau stock alimentation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="stats-section">
+                <h2 class="section-title"><i class="fas fa-bolt"></i> Actions rapides</h2>
+                
+                <div class="quick-actions">
+                    <div class="action-card">
+                        <div class="action-icon"><i class="fas fa-plus"></i></div>
+                        <div class="action-text">Nouvelle traite</div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon"><i class="fas fa-notes-medical"></i></div>
+                        <div class="action-text">Enregistrer soin</div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div class="action-text">Vérifier stock</div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon"><i class="fas fa-syringe"></i></div>
+                        <div class="action-text">Programmer vaccination</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activities -->
+            <div class="recent-activities">
+                <div class="activities-header">
+                    <h2 class="activities-title"><i class="fas fa-history"></i> Activités récentes</h2>
+                    <a href="#" class="view-all">Voir tout</a>
+                </div>
+                
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-icon" style="background-color: #E8F5E9; color: #4CAF50;">
+                            <i class="fas fa-syringe"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">Vaccination de 5 génisses effectuée par Dr. Martin</p>
+                            <span class="activity-time">Il y a 2 heures</span>
+                        </div>
+                    </li>
+                    
+                    <li class="activity-item">
+                        <div class="activity-icon" style="background-color: #E3F2FD; color: #2196F3;">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">Traite du matin complétée - 1245L collectés</p>
+                            <span class="activity-time">Il y a 4 heures</span>
+                        </div>
+                    </li>
+                    
+                    <li class="activity-item">
+                        <div class="activity-icon" style="background-color: #FFF8E1; color: #FFC107;">
+                            <i class="fas fa-truck-loading"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">Livraison d'aliments reçue - 2 tonnes de fourrage</p>
+                            <span class="activity-time">Hier, 15:30</span>
+                        </div>
+                    </li>
+                    
+                    <li class="activity-item">
+                        <div class="activity-icon" style="background-color: #FFEBEE; color: #F44336;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">Alerte: Stock d'aliments critique - Commander ASAP</p>
+                            <span class="activity-time">Hier, 11:45</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Autres sections (cachées par défaut) -->
+        <div id="statistics" class="content-section">
+            <div class="module-content">
+                <div class="module-header">
+                    <h2 class="module-title"><i class="fas fa-chart-line"></i> Statistiques de production</h2>
+                </div>
+                <p>Graphiques et analyses statistiques sur la production laitière.</p>
+            </div>
+        </div>
+        
+        <div id="notifications" class="content-section">
+            <div class="module-content">
+                <div class="module-header">
+                    <h2 class="module-title"><i class="fas fa-bell"></i> Notifications</h2>
+                </div>
+                <p>Liste des alertes et notifications du système.</p>
+            </div>
+        </div>
+        
+        <div id="personnel" class="content-section">
+            <div class="module-content">
+                <div class="module-header">
+                    <h2 class="module-title"><i class="fas fa-users"></i> Gestion du personnel</h2>
+                </div>
+                <p>Interface de gestion des employés de la ferme.</p>
+            </div>
+        </div>
+        
+        <!-- Ajoutez d'autres sections de contenu pour chaque élément de menu -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des catégories pliables/dépliables
+            const categoryTitles = document.querySelectorAll('.category-title');
+            
+            categoryTitles.forEach(title => {
+                title.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    const menuItems = this.nextElementSibling;
+                    
+                    // Basculer l'état de la catégorie
+                    menuItems.classList.toggle('collapsed');
+                });
+            });
+            
+            // Gestion de la navigation entre les sections
+            const menuItems = document.querySelectorAll('.menu-items li');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    // Mettre à jour la classe active du menu
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Afficher la section de contenu correspondante
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === sectionId) {
+                            section.classList.add('active');
+                            
+                            // Mettre à jour le titre du dashboard
+                            const dashboardTitle = document.querySelector('.dashboard-title');
+                            dashboardTitle.textContent = this.querySelector('span').textContent;
+                        }
+                    });
+                });
+            });
+            
+            // Animation des cartes de statistiques
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>
