@@ -10,6 +10,7 @@ class AnalysisParameters(models.Model):
     description = models.CharField(db_column='Description', max_length=255, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'AnalysisParameters'
 
     def __str__(self):
@@ -22,6 +23,7 @@ class Barns(models.Model):
     location = models.CharField(db_column='Location', max_length=100, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'Barns'
 
     def __str__(self):
@@ -39,6 +41,7 @@ class Cows(models.Model):
     last_milking_date = models.DateField(db_column='LastMilkingDate', null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'Cows'
 
     def __str__(self):
@@ -53,6 +56,7 @@ class CowBiologicalAnalysis(models.Model):
     result = models.CharField(db_column='Result', max_length=50, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'CowBiologicalAnalysis'
 
 class Food(models.Model):
@@ -65,6 +69,7 @@ class Food(models.Model):
     reorder_level = models.DecimalField(db_column='ReorderLevel', max_digits=10, decimal_places=2, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'Food'
 
     def __str__(self):
@@ -78,6 +83,7 @@ class CowFeeding(models.Model):
     quantity = models.DecimalField(db_column='Quantity', max_digits=10, decimal_places=2)
 
     class Meta:
+        managed = False
         db_table = 'CowFeeding'
 
 class CowHealth(models.Model):
@@ -90,6 +96,7 @@ class CowHealth(models.Model):
     next_checkup_date = models.DateField(db_column='NextCheckupDate', null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'CowHealth'
 
 class Employees(models.Model):
@@ -102,6 +109,7 @@ class Employees(models.Model):
     hire_date = models.DateField(db_column='HireDate')
 
     class Meta:
+        managed = False
         db_table = 'Employees'
 
     def __str__(self):
@@ -115,6 +123,7 @@ class EmployeeTasks(models.Model):
     task_date = models.DateField(db_column='TaskDate')
 
     class Meta:
+        managed = False
         db_table = 'EmployeeTasks'
 
 class FoodAnalysis(models.Model):
@@ -125,6 +134,7 @@ class FoodAnalysis(models.Model):
     value = models.DecimalField(db_column='Value', max_digits=10, decimal_places=2, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'FoodAnalysis'
 
 class Resources(models.Model):
@@ -137,6 +147,7 @@ class Resources(models.Model):
     reorder_level = models.DecimalField(db_column='ReorderLevel', max_digits=10, decimal_places=2, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'Resources'
     
     def __str__(self):
@@ -148,6 +159,7 @@ class Suppliers(models.Model):
     contact_info = models.CharField(db_column='ContactInfo', max_length=255, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'Suppliers'
 
     def __str__(self):
@@ -160,6 +172,7 @@ class PurchaseOrders(models.Model):
     status = models.CharField(db_column='Status', max_length=50, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'PurchaseOrders'
 
 class GoodsReceiptNotes(models.Model):
@@ -169,6 +182,7 @@ class GoodsReceiptNotes(models.Model):
     status = models.CharField(db_column='Status', max_length=50, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'GoodsReceiptNotes'
 
 class GoodsReceiptDetails(models.Model):
@@ -178,6 +192,7 @@ class GoodsReceiptDetails(models.Model):
     received_quantity = models.DecimalField(db_column='ReceivedQuantity', max_digits=10, decimal_places=2)
 
     class Meta:
+        managed = False
         db_table = 'GoodsReceiptDetails'
 
 class Machines(models.Model):
@@ -188,6 +203,7 @@ class Machines(models.Model):
     next_maintenance = models.DateField(db_column='NextMaintenance', null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'Machines'
 
     def __str__(self):
@@ -201,6 +217,7 @@ class MilkProduction(models.Model):
     quality = models.CharField(db_column='Quality', max_length=100, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'MilkProduction'
 
 class MilkAnalysis(models.Model):
@@ -211,6 +228,7 @@ class MilkAnalysis(models.Model):
     value = models.DecimalField(db_column='Value', max_digits=10, decimal_places=2, null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'MilkAnalysis'
 
 class PurchaseOrderItems(models.Model):
@@ -219,6 +237,7 @@ class PurchaseOrderItems(models.Model):
     ordered_quantity = models.DecimalField(db_column='OrderedQuantity', max_digits=10, decimal_places=2)
 
     class Meta:
+        managed = False
         db_table = 'PurchaseOrderItems'
         unique_together = (('resource', 'order'),)
 
@@ -229,6 +248,7 @@ class SpareParts(models.Model):
     reorder_level = models.IntegerField(db_column='ReorderLevel')
 
     class Meta:
+        managed = False
         db_table = 'SpareParts'
 
 class UserAuth(AbstractUser):
