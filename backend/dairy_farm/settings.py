@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-import dairy_farm.patches # Monkeypatch for SQL Server v17 support
+import dairy_farm.patches  # Monkeypatch for SQL Server v17 support
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -149,3 +149,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vue.js dev server
     "http://127.0.0.1:5173",
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ]
+}
