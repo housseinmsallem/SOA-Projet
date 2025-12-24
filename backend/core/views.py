@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework import status
 from .models import (
     Cows,
@@ -50,8 +50,16 @@ from .serializers import (
 )
 
 
-class CowsView(APIView):
-    permission_classes = [IsAuthenticated]
+class BaseCoreView(APIView):
+    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+
+    def get_queryset(self):
+        # DjangoModelPermissions requires this method
+        return self.model.objects.all()
+
+
+class CowsView(BaseCoreView):
+    model = Cows
 
     def get(self, request):
         items = Cows.objects.all()
@@ -59,8 +67,6 @@ class CowsView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = CowsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -68,8 +74,8 @@ class CowsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class BarnsView(APIView):
-    permission_classes = [IsAuthenticated]
+class BarnsView(BaseCoreView):
+    model = Barns
 
     def get(self, request):
         items = Barns.objects.all()
@@ -77,8 +83,6 @@ class BarnsView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = BarnsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -86,8 +90,8 @@ class BarnsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AnalysisParametersView(APIView):
-    permission_classes = [IsAuthenticated]
+class AnalysisParametersView(BaseCoreView):
+    model = AnalysisParameters
 
     def get(self, request):
         items = AnalysisParameters.objects.all()
@@ -95,8 +99,6 @@ class AnalysisParametersView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = AnalysisParametersSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -104,8 +106,8 @@ class AnalysisParametersView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CowBiologicalAnalysisView(APIView):
-    permission_classes = [IsAuthenticated]
+class CowBiologicalAnalysisView(BaseCoreView):
+    model = CowBiologicalAnalysis
 
     def get(self, request):
         items = CowBiologicalAnalysis.objects.all()
@@ -113,8 +115,6 @@ class CowBiologicalAnalysisView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = CowBiologicalAnalysisSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -122,8 +122,8 @@ class CowBiologicalAnalysisView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FoodView(APIView):
-    permission_classes = [IsAuthenticated]
+class FoodView(BaseCoreView):
+    model = Food
 
     def get(self, request):
         items = Food.objects.all()
@@ -131,8 +131,6 @@ class FoodView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = FoodSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -140,8 +138,8 @@ class FoodView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CowFeedingView(APIView):
-    permission_classes = [IsAuthenticated]
+class CowFeedingView(BaseCoreView):
+    model = CowFeeding
 
     def get(self, request):
         items = CowFeeding.objects.all()
@@ -149,8 +147,6 @@ class CowFeedingView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = CowFeedingSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -158,8 +154,8 @@ class CowFeedingView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CowHealthView(APIView):
-    permission_classes = [IsAuthenticated]
+class CowHealthView(BaseCoreView):
+    model = CowHealth
 
     def get(self, request):
         items = CowHealth.objects.all()
@@ -167,8 +163,6 @@ class CowHealthView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = CowHealthSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -176,8 +170,8 @@ class CowHealthView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EmployeesView(APIView):
-    permission_classes = [IsAuthenticated]
+class EmployeesView(BaseCoreView):
+    model = Employees
 
     def get(self, request):
         items = Employees.objects.all()
@@ -185,8 +179,6 @@ class EmployeesView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = EmployeesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -194,8 +186,8 @@ class EmployeesView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EmployeeTasksView(APIView):
-    permission_classes = [IsAuthenticated]
+class EmployeeTasksView(BaseCoreView):
+    model = EmployeeTasks
 
     def get(self, request):
         items = EmployeeTasks.objects.all()
@@ -203,8 +195,6 @@ class EmployeeTasksView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = EmployeeTasksSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -212,8 +202,8 @@ class EmployeeTasksView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FoodAnalysisView(APIView):
-    permission_classes = [IsAuthenticated]
+class FoodAnalysisView(BaseCoreView):
+    model = FoodAnalysis
 
     def get(self, request):
         items = FoodAnalysis.objects.all()
@@ -221,8 +211,6 @@ class FoodAnalysisView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = FoodAnalysisSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -230,8 +218,8 @@ class FoodAnalysisView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ResourcesView(APIView):
-    permission_classes = [IsAuthenticated]
+class ResourcesView(BaseCoreView):
+    model = Resources
 
     def get(self, request):
         items = Resources.objects.all()
@@ -239,8 +227,6 @@ class ResourcesView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = ResourcesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -248,8 +234,8 @@ class ResourcesView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SuppliersView(APIView):
-    permission_classes = [IsAuthenticated]
+class SuppliersView(BaseCoreView):
+    model = Suppliers
 
     def get(self, request):
         items = Suppliers.objects.all()
@@ -257,8 +243,6 @@ class SuppliersView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = SuppliersSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -266,8 +250,8 @@ class SuppliersView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PurchaseOrdersView(APIView):
-    permission_classes = [IsAuthenticated]
+class PurchaseOrdersView(BaseCoreView):
+    model = PurchaseOrders
 
     def get(self, request):
         items = PurchaseOrders.objects.all()
@@ -275,8 +259,6 @@ class PurchaseOrdersView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = PurchaseOrdersSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -284,8 +266,8 @@ class PurchaseOrdersView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GoodsReceiptNotesView(APIView):
-    permission_classes = [IsAuthenticated]
+class GoodsReceiptNotesView(BaseCoreView):
+    model = GoodsReceiptNotes
 
     def get(self, request):
         items = GoodsReceiptNotes.objects.all()
@@ -293,8 +275,6 @@ class GoodsReceiptNotesView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = GoodsReceiptNotesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -302,8 +282,8 @@ class GoodsReceiptNotesView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GoodsReceiptDetailsView(APIView):
-    permission_classes = [IsAuthenticated]
+class GoodsReceiptDetailsView(BaseCoreView):
+    model = GoodsReceiptDetails
 
     def get(self, request):
         items = GoodsReceiptDetails.objects.all()
@@ -311,8 +291,6 @@ class GoodsReceiptDetailsView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = GoodsReceiptDetailsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -320,8 +298,8 @@ class GoodsReceiptDetailsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MachinesView(APIView):
-    permission_classes = [IsAuthenticated]
+class MachinesView(BaseCoreView):
+    model = Machines
 
     def get(self, request):
         items = Machines.objects.all()
@@ -329,8 +307,6 @@ class MachinesView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = MachinesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -338,8 +314,8 @@ class MachinesView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MilkProductionView(APIView):
-    permission_classes = [IsAuthenticated]
+class MilkProductionView(BaseCoreView):
+    model = MilkProduction
 
     def get(self, request):
         items = MilkProduction.objects.all()
@@ -347,8 +323,6 @@ class MilkProductionView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = MilkProductionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -356,8 +330,8 @@ class MilkProductionView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MilkAnalysisView(APIView):
-    permission_classes = [IsAuthenticated]
+class MilkAnalysisView(BaseCoreView):
+    model = MilkAnalysis
 
     def get(self, request):
         items = MilkAnalysis.objects.all()
@@ -365,8 +339,6 @@ class MilkAnalysisView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = MilkAnalysisSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -374,8 +346,8 @@ class MilkAnalysisView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PurchaseOrderItemsView(APIView):
-    permission_classes = [IsAuthenticated]
+class PurchaseOrderItemsView(BaseCoreView):
+    model = PurchaseOrderItems
 
     def get(self, request):
         items = PurchaseOrderItems.objects.all()
@@ -383,8 +355,6 @@ class PurchaseOrderItemsView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = PurchaseOrderItemsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -392,8 +362,8 @@ class PurchaseOrderItemsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SparePartsView(APIView):
-    permission_classes = [IsAuthenticated]
+class SparePartsView(BaseCoreView):
+    model = SpareParts
 
     def get(self, request):
         items = SpareParts.objects.all()
@@ -401,8 +371,6 @@ class SparePartsView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = SparePartsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -410,8 +378,8 @@ class SparePartsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserAuthView(APIView):
-    permission_classes = [IsAuthenticated]
+class UserAuthView(BaseCoreView):
+    model = UserAuth
 
     def get(self, request):
         items = UserAuth.objects.all()
@@ -419,8 +387,6 @@ class UserAuthView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.user.role != UserAuth.Roles.ADMIN:
-            return Response({"detail": "Admin only"}, status=status.HTTP_403_FORBIDDEN)
         serializer = UserAuthSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
