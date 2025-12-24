@@ -10,10 +10,10 @@ INSERT INTO Barns (Name, Capacity, Location) VALUES
 ('Isolation Barn', 10, 'East Sector');
 
 -- Seeding Cows (assuming BarnIDs 1 and 2)
-INSERT INTO Cows (BarnID, EarTagNumber, Breed, DateOfBirth, Gender, Weight, HealthStatus, LastMilkingDate) VALUES 
-(1, 'COW-001', 'Holstein', '2022-01-15', 'Female', 650.50, 'Healthy', '2023-12-20'),
-(1, 'COW-002', 'Jersey', '2021-05-20', 'Female', 520.00, 'Healthy', '2023-12-21'),
-(2, 'COW-003', 'Holstein', '2023-03-10', 'Female', 480.00, 'Under Observation', NULL);
+INSERT INTO Cows (BarnID, TagNumber, BirthDate, CurrentPhase) VALUES 
+(1, 'COW-001', '2022-01-15', 'L'),
+(1, 'COW-002', '2021-05-20', 'L'),
+(2, 'COW-003', '2023-03-10', 'V');
 
 -- Seeding Food
 INSERT INTO Food (Name, Type, Category, Quantity, Unit, ReorderLevel) VALUES 
@@ -50,6 +50,6 @@ INSERT INTO MilkProduction (CowID, ProductionDate, Quantity, Quality) VALUES
 
 -- Seeding CowFeeding
 -- Assuming CowID 1 and FoodID 1 (Organic Hay)
-INSERT INTO CowFeeding (CowID, FoodID, Date, Quantity) VALUES 
+INSERT INTO CowFeeding (CowID, FoodID, FeedingDate, Quantity) VALUES 
 (1, 1, '2023-12-23', 15.0),
 (2, 1, '2023-12-23', 12.0);

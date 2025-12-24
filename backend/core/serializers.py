@@ -1,4 +1,26 @@
-from .models import *
+from .models import (
+    AnalysisParameters,
+    Barns,
+    Cows,
+    CowFeeding,
+    CowBiologicalAnalysis,
+    Food,
+    CowHealth,
+    Employees,
+    EmployeeTasks,
+    FoodAnalysis,
+    Resources,
+    Suppliers,
+    PurchaseOrderItems,
+    PurchaseOrders,
+    GoodsReceiptDetails,
+    GoodsReceiptNotes,
+    Machines,
+    MilkProduction,
+    MilkAnalysis,
+    SpareParts,
+    UserAuth,
+)
 from rest_framework import serializers
 
 
@@ -11,7 +33,7 @@ class AnalysisParametersSerializer(serializers.ModelSerializer):
 class BarnsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Barns
-        fields = "__all__"
+        fields = ["name", "capacity", "location"]
 
 
 class CowsSerializer(serializers.ModelSerializer):
