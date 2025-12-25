@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions, AllowAny
 from rest_framework import status
 from .models import (
     Cows,
@@ -48,6 +48,7 @@ from .serializers import (
     SparePartsSerializer,
     UserAuthSerializer,
 )
+from django.contrib.auth import authenticate, login
 
 
 class BaseCoreView(APIView):
@@ -59,6 +60,7 @@ class BaseCoreView(APIView):
 
 
 class CowsView(BaseCoreView):
+    user = authenticate(username="houss", password="00874805")
     model = Cows
 
     def get(self, request):
