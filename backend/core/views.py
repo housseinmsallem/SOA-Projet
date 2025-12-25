@@ -48,11 +48,13 @@ from .serializers import (
     SparePartsSerializer,
     UserAuthSerializer,
 )
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
+from .permissions import IsAdministrateur
 
 
 class BaseCoreView(APIView):
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    def get_permissions(self):
+        return [IsAuthenticated()]
 
     def get_queryset(self):
         # DjangoModelPermissions requires this method
@@ -60,7 +62,6 @@ class BaseCoreView(APIView):
 
 
 class CowsView(BaseCoreView):
-    user = authenticate(username="houss", password="00874805")
     model = Cows
 
     def get(self, request):
@@ -174,6 +175,12 @@ class CowHealthView(BaseCoreView):
 
 class EmployeesView(BaseCoreView):
     model = Employees
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
 
     def get(self, request):
         items = Employees.objects.all()
