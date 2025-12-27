@@ -93,10 +93,10 @@ DATABASES = {
         "USER": "",
         "PASSWORD": "",
         "HOST": r"localhost\MSSQLSERVER01",
-        "PORT": os.getenv("DB_PORT", "1433"),
+        "PORT": "",
         "OPTIONS": {
             "driver": "ODBC Driver 18 for SQL Server",
-            "extra_params": "TrustServerCertificate=yes;Integrated Security=True;",
+            "extra_params": "TrustServerCertificate=yes;",
         },
     }
 }
