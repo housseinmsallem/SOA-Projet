@@ -48,7 +48,12 @@ from .serializers import (
     SparePartsSerializer,
     UserAuthSerializer,
 )
-from .permissions import IsAdministrateur
+from .permissions import (
+    IsAdministrateur,
+    IsEmploye,
+    IsVeterinaire,
+    IsResponsableProduction,
+)
 
 
 class BaseCoreView(APIView):
@@ -113,35 +118,77 @@ class CowsView(BaseCoreView):
     model = Cows
     serializer_class = CowsSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsEmploye())
+        return permissions
+
 
 class BarnsView(BaseCoreView):
     model = Barns
     serializer_class = BarnsSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
 
 
 class AnalysisParametersView(BaseCoreView):
     model = AnalysisParameters
     serializer_class = AnalysisParametersSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsResponsableProduction())
+        return permissions
+
 
 class CowBiologicalAnalysisView(BaseCoreView):
     model = CowBiologicalAnalysis
     serializer_class = CowBiologicalAnalysisSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsVeterinaire())
+        return permissions
 
 
 class FoodView(BaseCoreView):
     model = Food
     serializer_class = FoodSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsVeterinaire())
+        return permissions
+
 
 class CowFeedingView(BaseCoreView):
     model = CowFeeding
     serializer_class = CowFeedingSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsVeterinaire())
+        return permissions
+
 
 class CowHealthView(BaseCoreView):
     model = CowHealth
     serializer_class = CowHealthSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsVeterinaire())
+        return permissions
 
 
 class EmployeesView(BaseCoreView):
@@ -159,62 +206,140 @@ class EmployeeTasksView(BaseCoreView):
     model = EmployeeTasks
     serializer_class = EmployeeTasksSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsEmploye())
+        return permissions
+
 
 class FoodAnalysisView(BaseCoreView):
     model = FoodAnalysis
     serializer_class = FoodAnalysisSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsVeterinaire())
+        return permissions
 
 
 class ResourcesView(BaseCoreView):
     model = Resources
     serializer_class = ResourcesSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
+
 
 class SuppliersView(BaseCoreView):
     model = Suppliers
     serializer_class = SuppliersSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
 
 
 class PurchaseOrdersView(BaseCoreView):
     model = PurchaseOrders
     serializer_class = PurchaseOrdersSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
+
 
 class GoodsReceiptNotesView(BaseCoreView):
     model = GoodsReceiptNotes
     serializer_class = GoodsReceiptNotesSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
 
 
 class GoodsReceiptDetailsView(BaseCoreView):
     model = GoodsReceiptDetails
     serializer_class = GoodsReceiptDetailsSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
+
 
 class MachinesView(BaseCoreView):
     model = Machines
     serializer_class = MachinesSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
 
 
 class MilkProductionView(BaseCoreView):
     model = MilkProduction
     serializer_class = MilkProductionSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsResponsableProduction())
+        return permissions
+
 
 class MilkAnalysisView(BaseCoreView):
     model = MilkAnalysis
     serializer_class = MilkAnalysisSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur(), IsResponsableProduction())
+        return permissions
 
 
 class PurchaseOrderItemsView(BaseCoreView):
     model = PurchaseOrderItems
     serializer_class = PurchaseOrderItemsSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
+
 
 class SparePartsView(BaseCoreView):
     model = SpareParts
     serializer_class = SparePartsSerializer
 
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
+
 
 class UserAuthView(BaseCoreView):
     model = UserAuth
     serializer_class = UserAuthSerializer
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            permissions.append(IsAdministrateur())
+        return permissions
