@@ -59,45 +59,64 @@ graph TD
 Ce diagramme illustre les interactions des différents acteurs avec les fonctionnalités principales du système.
 
 ```mermaid
-usecaseDiagram
-    actor Admin as "Administrateur"
-    actor Emp as "Employé"
-    actor Vet as "Vétérinaire"
-    actor ProdMgr as "Resp. Production"
+graph LR
+    subgraph Actors [Acteurs]
+        direction TB
+        Admin[Administrateur]
+        Emp[Employé]
+        Vet[Vétérinaire]
+        ProdMgr[Resp. Production]
+    end
 
-    usecase UC1 as "Gérer le Personnel"
-    usecase UC2 as "Gérer les Machines"
-    usecase UC3 as "Planifier Maintenance"
-    usecase UC4 as "Gérer les Étables"
+    subgraph Ressources [Gestion des Ressources]
+        direction TB
+        UC1([Gérer le Personnel])
+        UC2([Gérer les Machines])
+        UC3([Planifier Maintenance])
+        UC4([Gérer les Étables])
+    end
 
-    usecase UC5 as "Gérer les Stocks"
-    usecase UC6 as "Gérer Approvisionnement"
-    usecase UC7 as "Saisir Tâches Quotidiennes"
+    subgraph Operations [Opérations & Stock]
+        direction TB
+        UC5([Gérer les Stocks])
+        UC6([Gérer Approvisionnement])
+        UC7([Saisir Tâches Quotidiennes])
+    end
 
-    usecase UC8 as "Identifier/Ajouter Vache"
-    usecase UC9 as "Mettre à jour Cycle de Vie"
-    usecase UC10 as "Enregistrer Alimentation"
-    usecase UC11 as "Consulter Dossier Vache"
+    subgraph Troupeau [Gestion Troupeau]
+        direction TB
+        UC8([Identifier/Ajouter Vache])
+        UC9([Mettre à jour Cycle de Vie])
+        UC10([Enregistrer Alimentation])
+        UC11([Consulter Dossier Vache])
+    end
 
-    usecase UC12 as "Saisir Interventions Santé"
-    usecase UC13 as "Enregistrer Production Lait"
-    usecase UC14 as "Saisir Analyses (Bio/Lait)"
-    usecase UC15 as "Analyser Performances"
+    subgraph SanteProd [Santé & Production]
+        direction TB
+        UC12([Saisir Interventions Santé])
+        UC13([Enregistrer Production Lait])
+        UC14([Saisir Analyses Bio/Lait])
+        UC15([Analyser Performances])
+    end
 
+    %% Relations Administrateur
     Admin --> UC1
     Admin --> UC2
     Admin --> UC4
     Admin --> UC3
     
+    %% Relations Employé
     Emp --> UC7
     Emp --> UC10
     Emp --> UC13
     Emp --> UC5
 
+    %% Relations Vétérinaire
     Vet --> UC12
     Vet --> UC14
     Vet --> UC11
 
+    %% Relations Resp. Production
     ProdMgr --> UC6
     ProdMgr --> UC15
     ProdMgr --> UC9
